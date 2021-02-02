@@ -1,6 +1,6 @@
 {
 "type": "FeatureCollection",
-"name": "puntos_actualizados",
+"name": "updated_points",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "name": "Tūranga", "points": "+10", "challenge": "Find the portrait of Margaret Mahy and take a picture of a teammate standing beside it.", "information": "Tūranga, the city's central library, opened in 2018. The construction included guidance from Ngāi Tahu and the Ngāi Tūāhuriri rūnanga, as well as state-of-the-art earthquake strengthening with post-tensioned walls and viscous dampers.", "note": null, "bonus": "Bonus +5 Include a teammate holding a book by Marget Mahy in the picture.", "points_int": 10, "bonus_int_1": 5 }, "geometry": { "type": "Point", "coordinates": [ 172.63711, -43.52995, 0.0 ] } },
