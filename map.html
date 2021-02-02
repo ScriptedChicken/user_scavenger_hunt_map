@@ -42,6 +42,13 @@
             <p id='title' class='timer'>&#9201 Timer</p>
             <div id='content'></div>
             <hr>
+            <p id='title' class='photo-opportunities'>&#128247 Photo Opportunities</p>
+            <button id='Chch Frame' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("chch_frames_div")'>Found a Chch Frame!</button>
+            <div id='chch_frames_div' class='text'>0</div>
+            <br>
+            <button id='Whāriki Manaaki' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("nga_whāriki_manaaki_div")'>Found a Whāriki Manaaki!</button>
+            <div id='nga_whāriki_manaaki_div' class='text'>0</div>
+            <hr>
             <p id='title' class='progress'>&#128200 Progress</p>
             <div id='progress_div'>
                 <table style="width:100%" id='progress_table'>
@@ -54,7 +61,6 @@
                 </table>
                 <p class='italics'>F = Found | B = Bonus | X = Broken</p>
             </div>
-            <hr>
         </div>
         <script type="text/javascript">
             // Creates a basic map
@@ -76,6 +82,14 @@
             timeLimit = moment(now).add(30, 'm').toDate();
             timeLimit = moment(timeLimit).add(1, 'h').toDate();
             var checker = setInterval(updateTime, 1000)
+
+            function plusOne(id) {
+                num_count = document.getElementById(id).textContent
+                console.log(num_count)
+                num_count = parseInt(num_count)
+                num_count += 1
+                document.getElementById(id).textContent = num_count
+            }
 
             function updateTime() {
                 time = moment(time).subtract(1, 's').toDate()
@@ -141,7 +155,8 @@
                 points_counter.remove(map)
                 num += points
                 updatePointsCounter(num)
-                changeMarkerState(id)
+                try{changeMarkerState(id)}
+                catch{console.log("Adding a photo opportunity")}
             }
 
             function updatePointsCounter(num) {
@@ -161,7 +176,6 @@
                 // Takes the ID of the clicked button, matching it with the leaflet marker ID. The string of
                 // the display text is then sliced, removing the button, allowing the button to stay removed after
                 // opening and closing a popup.
-                lyr = marker_group.getLayer(id)
                 text = lyr.options['text']
                 n = text.indexOf('<button')
                 lyr.options['text'] = text.slice(0, n)
@@ -223,7 +237,6 @@
             };
 
             function getCode(btn) {
-                console.log(btn)
                 if (btn.textContent.includes("Found")) {
                     code = "F"
                 } else if (btn.textContent.includes("bonus")) {
@@ -239,13 +252,16 @@
             function updateProgress(btn, points) {
                 html = $("#progress_table").html()
                 lyr = marker_group.getLayer(btn.id)
-                title = lyr._icon.title
+
+                // Tests to see whether the button is connected to a marker or a photo opportunity location
+                try{title = lyr._icon.title}
+                catch{title = btn.id}
+
                 now = moment(new Date().getTime()).format("HH:mm:ss")
                 previous_points = $(".points")
                 for (i = 0; i < previous_points.length; i++) {
                     total = previous_points[i].textContent
                     total = Number(total)
-                    console.log(total)
                 }
                 code = getCode(btn)
                 

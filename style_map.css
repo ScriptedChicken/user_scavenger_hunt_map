@@ -43,7 +43,7 @@ counter {font-size: 480%;
   font-size: 30px;
   font-weight: bolder;
 }
-.timer, .progress {
+.timer, .progress, .photo-opportunities {
   margin-bottom: 4px;
   margin-top: 4px;
 }
