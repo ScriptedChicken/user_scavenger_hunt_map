@@ -39,7 +39,7 @@ counter {font-size: 480%;
   border-radius: 15px 0px 0px 15px;
 }
 /* Font size and formatting controllers */
-#title {
+.title {
   font-size: 30px;
   font-weight: bolder;
 }
@@ -64,6 +64,16 @@ message {
   background-color: #F6921E;
   border: #F6921E;
   color: rgb(80,81,84);
+}
+
+#888, #999 {
+  float: left;
+}
+
+#nga_whāriki_manaaki_div, #chch_frames_div {
+  float: right;
+  margin-right: 65px;
+  margin-top: 6px;
 }
 
 .button:hover, .button-error:hover {

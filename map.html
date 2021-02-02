@@ -39,17 +39,19 @@
         <div id="map"></div>
         <div id="sidebarLeft"></div>
         <div id="sidebarRight">
-            <p id='title' class='timer'>&#9201 Timer</p>
+            <p class='timer title'>&#9201 Timer</p>
             <div id='content'></div>
             <hr>
-            <p id='title' class='photo-opportunities'>&#128247 Photo Opportunities</p>
-            <button id='Chch Frame' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("chch_frames_div")'>Found a Chch Frame!</button>
-            <div id='chch_frames_div' class='text'>0</div>
+            <p class='photo-opportunities title'>&#128247 Photo Opportunities</p>
             <br>
-            <button id='Whāriki Manaaki' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("nga_whāriki_manaaki_div")'>Found a Whāriki Manaaki!</button>
+            <button id='888' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("chch_frames_div")'>Found a Chch Frame!</button>
+            <div id='chch_frames_div' class='text'>0</div>
+            <br><br>
+            <button id='999' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("nga_whāriki_manaaki_div")'>Found a Whāriki Manaaki!</button>
             <div id='nga_whāriki_manaaki_div' class='text'>0</div>
+            <br><br>
             <hr>
-            <p id='title' class='progress'>&#128200 Progress</p>
+            <p class='progress title'>&#128200 Progress</p>
             <div id='progress_div'>
                 <table style="width:100%" id='progress_table'>
                     <tr>
@@ -85,10 +87,27 @@
 
             function plusOne(id) {
                 num_count = document.getElementById(id).textContent
-                console.log(num_count)
-                num_count = parseInt(num_count)
-                num_count += 1
-                document.getElementById(id).textContent = num_count
+                bool = isValidCount(num_count, id)
+                if (bool == true) {
+                    console.log(num_count)
+                    num_count = parseInt(num_count)
+                    num_count += 1
+                    document.getElementById(id).textContent = num_count
+                } else {
+                    alert("Something doesn't add up - you can't have seen that many!")
+                }
+            }
+
+            function isValidCount(num_count, id) {
+                if ((id == 'chch_frames_div') && (num_count >= 8)) {
+                    result = false
+                    console.log('switching to false')
+                } else if ((id == 'nga_whāriki_manaaki_div') && (num_count >= 13)) {
+                    result = false
+                } else {
+                    result = true
+                }
+                return result
             }
 
             function updateTime() {
@@ -97,7 +116,7 @@
                     str = "<p class='text'><b>Time remaining</b> = " + formatTime(time, true) + "</p>"
                     str += "<p class='text'><b>Time limit</b> = " + formatTime(timeLimit, false) + "</p>"
                 } else {
-                    str = "<p id='title'><b>Out of time!</b></p>"
+                    str = "<p class='title'><b>Out of time!</b></p>"
                     clearInterval(checker)
                 }
                 
@@ -156,7 +175,7 @@
                 num += points
                 updatePointsCounter(num)
                 try{changeMarkerState(id)}
-                catch{console.log("Adding a photo opportunity")}
+                catch{}
             }
 
             function updatePointsCounter(num) {
@@ -200,7 +219,7 @@
                     {'name':'Note','data':props.note, 'emoji':'&#10069',},
                     {'name':'Bonus','data':props.bonus, 'emoji':'&#127942',}
                 ]
-                text = "<p id=title >" + props.name + "</p>"
+                text = "<p class=title >" + props.name + "</p>"
                 i = 0
                 while (i<props_list.length) {
                     if (props_list[i].data != null) {
@@ -255,7 +274,11 @@
 
                 // Tests to see whether the button is connected to a marker or a photo opportunity location
                 try{title = lyr._icon.title}
-                catch{title = btn.id}
+                catch{if (btn.id == 888) {
+                    title = "Chch Frame"
+                } else {
+                    title = "Whāriki Manaaki"
+                }}
 
                 now = moment(new Date().getTime()).format("HH:mm:ss")
                 previous_points = $(".points")
@@ -356,6 +379,8 @@
             map.on("contextmenu", function() {
                 // This function is used for testing, and can be called by clicking the map with the right mouse button
                 console.log("Testing");
+                sidebarRight.toggle()
+                updateTime()
             })
         </script>
     </body>
