@@ -6,15 +6,15 @@ Description:
 An interactive map for use in the chch scavenger hunt activity created in 2020/2021 USER program. Based off a pre-existing MyMaps page (see USER Google Drive for documentation and other resources). This version provides a base for more functionality and style.
     
 Needed Bug fixes:
-    Change shared CSS IDs to classes
+* Change shared CSS IDs to classes
 
 Possible Additions:
-    Addition of team name input
-    Title screen
-    Add buttons for 'Photo Opportunities'
-    Originally set opacity for logo to low, user can tap/click to increase opacity
-    Every location visited logged in text file, can be used for viewing later to validate points
-    Add timer
-    Add location tracking functionality
-      > track location if within set bounds (central chch)
-      > else, display message/icon notifying the user that they are outside of the play area
+* Addition of team name input
+* Title screen
+* Add buttons for 'Photo Opportunities'
+* Originally set opacity for logo to low, user can tap/click to increase opacity
+* Every location visited logged in text file, can be used for viewing later to validate points
+* Add timer
+* Add location tracking functionality
+    * track location if within set bounds (central chch)
+    * else, display message/icon notifying the user that they are outside of the play area
