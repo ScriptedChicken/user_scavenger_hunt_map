@@ -1,0 +1,367 @@
+<!-- 
+Title: QuakeCoRE USER Scavenger Hunt Interactive Map
+Description: An interactive map for use in the chch scavenger hunt activity created in 2020/2021 USER program. Based off
+    a pre-existing MyMaps page (see USER Google Drive for documentation and other resources). This version provides a base
+    for more functionality and style.
+    
+Bug fixes:
+    - Change shared CSS IDs to classes
+
+Additions:
+    - Addition of team name input
+    - Title screen
+    - Add buttons for 'Photo Opportunities'
+    - Originally set opacity for logo to low, user can tap/click to increase opacity
+    - Every location visited logged in text file, can be used for viewing later to validate points
+    - Add timer
+    - Add location tracking functionality
+        > track location if within set bounds (central chch)
+        > else, display message/icon notifying the user that they are outside of the play area
+-->
+
+<html>
+    <head>
+        <!-- Leaflet -->
+        <link rel="stylesheet" href="http://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+        <script src="http://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+        
+        <!-- Main stylesheet -->
+        <link rel="stylesheet" href="style_map.css">
+        
+        <!-- Beautify marker main -->
+        <script src="js/leaflet-beautify-marker-icon.js"></script>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Font awesome maybe? -->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet">
+        <link rel="stylesheet" href="css/leaflet-beautify-marker-icon.css">
+
+        <!-- Sidebar -->
+        <link rel="stylesheet" href= "css/L.Control.Sidebar.css">
+        <script src="js/L.Control.Sidebar.js"></script>
+        
+        <!-- geoJSON data -->
+        <script src="scavenger_points.js"></script>
+
+        <!-- jquery -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.js"
+			  integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM="
+              crossorigin="anonymous"></script>
+        
+        <!-- Easybutton -->
+        <link rel="stylesheet" href="css/easy-button.css">
+        <script src="js/easy-button.js"></script>
+        
+        <!-- Moment (for use in timer functionality) -->
+        <script src="js/moment.js"></script>
+    </head>
+    <body>
+        <div id="map"></div>
+        <div id="sidebarLeft"></div>
+        <div id="sidebarRight">
+            <p id='title' class='timer'>&#9201 Timer</p>
+            <div id='content'></div>
+            <hr>
+            <p id='title' class='progress'>&#128200 Progress</p>
+            <div id='progress_div'>
+                <table style="width:100%" id='progress_table'>
+                    <tr>
+                      <th>Time</th>
+                      <th>Name</th>
+                      <th>Points</th>
+                      <th>Code</th>
+                    </tr>
+                </table>
+                <p class='italics'>F = Found | B = Bonus | X = Broken</p>
+            </div>
+            <hr>
+        </div>
+        <script type="text/javascript">
+            // Creates a basic map
+            const map = new L.Map('map', { center: new L.LatLng(-43.53092, 172.63682), zoom: 15, attributionControl: false });
+
+            // sets the number of starting points
+            num = 0
+            total = 0
+            button_state_dict = {}
+            message = ""
+            marker_group = L.layerGroup([])
+            quakeCoRELogo = L.control({position: 'bottomright'})
+            now = moment(new Date().getTime())
+            var time = moment().toDate();  // This will return a copy of the Date that the moment uses
+            time.setHours(1);
+            time.setMinutes(30);
+            time.setSeconds(0);
+            time.setMilliseconds(0);
+            timeLimit = moment(now).add(30, 'm').toDate();
+            timeLimit = moment(timeLimit).add(1, 'h').toDate();
+            var checker = setInterval(updateTime, 1000)
+
+            function updateTime() {
+                time = moment(time).subtract(1, 's').toDate()
+                if (formatTime(time) != "00:00:00") {
+                    str = "<p class='text'><b>Time remaining</b> = " + formatTime(time, true) + "</p>"
+                    str += "<p class='text'><b>Time limit</b> = " + formatTime(timeLimit, false) + "</p>"
+                } else {
+                    str = "<p id='title'><b>Out of time!</b></p>"
+                    clearInterval(checker)
+                }
+                
+                document.getElementById("content").innerHTML = str
+            }
+
+            $('map').ready(function () {
+                // called when map is loaded (avoiding errors with slow connections)
+                bounds = map.getBounds()
+                map.setMaxBounds(bounds)
+                map.setZoom(16)
+                map.options.minZoom = 16
+                updatePointsCounter(num)
+                addQuakeCoRELogo()
+                map.addControl(sidebarLeft)
+                map.addControl(sidebarRight)
+            })
+
+            timerButton = L.easyButton('fa-clock-o fa-2x', function(btn, map) {
+                sidebarRight.toggle()
+                updateTime()
+            }).addTo(map)
+            timerButton.button.style.padding = '0px';
+
+            function formatTime(time, seconds=true) {
+                // Takes a moment time object, sets the format to hours:minutes
+                
+                if (seconds) {
+                    time = moment(time).format("HH:mm:ss")
+                } else {
+                    time = moment(time).format("HH:mm")
+                }
+                return time
+            }
+
+            var sidebarLeft = L.control.sidebar('sidebarLeft', {
+                position: 'left',
+                autoPan: false
+            });
+
+            var sidebarRight = L.control.sidebar('sidebarRight', {
+                position: 'right',
+                autoPan: false
+            });
+
+            map.on("click", function() {
+                sidebarLeft.hide()
+                sidebarRight.hide()
+            })
+
+            function addPoints(id, points) {
+                // checks number of points and gets the id of the clicked button before removing it.
+                // The points counter is then removed, number of total points updated (num), and then
+                // the points counter is updated.
+                points_counter.remove(map)
+                num += points
+                updatePointsCounter(num)
+                changeMarkerState(id)
+            }
+
+            function updatePointsCounter(num) {
+                // Creates a new points counter with updated number of total points
+                points_counter = L.control({position: 'topright'})
+                points_counter.onAdd = function(map) {
+                    var div = L.DomUtil.create('div', 'leaflet-right');
+                    div.innerHTML= "<counter>&#11088 " + num +"</counter>";
+                    div.style.margin = '0px 0px 0px 0px'
+                    return div;
+                }
+                points_counter.addTo(map)
+                $('message').html(" &#11088 Points added!")
+            }
+
+            function changeMarkerState(id) {
+                // Takes the ID of the clicked button, matching it with the leaflet marker ID. The string of
+                // the display text is then sliced, removing the button, allowing the button to stay removed after
+                // opening and closing a popup.
+                lyr = marker_group.getLayer(id)
+                text = lyr.options['text']
+                n = text.indexOf('<button')
+                lyr.options['text'] = text.slice(0, n)
+                changeMarkerDisplay(lyr)
+            }
+            
+            function changeMarkerDisplay(lyr) {
+                // Couldn't figure out how to change the marker display once placed
+                icon = L.BeautifyIcon.icon(changed_options)
+                lyr.setIcon(icon)
+            }
+
+            function formatText(props) {
+                // Creates a dictionary of the possible information that a marker can hold. If present,
+                // each chunk of information text is provided title and emoji. Then loops through each 
+                // information chunk; if data was found for that chunk then the chunk's emoji, title, and data are added
+                // to the final html string.
+                props_list = [
+                    {'name':'Information','data':props.information, 'emoji':'&#128196',},
+                    {'name':'Points','data':props.points, 'emoji':'&#11088',},
+                    {'name':'Challenge','data':props.challenge, 'emoji':'&#127894',},
+                    {'name':'Note','data':props.note, 'emoji':'&#10069',},
+                    {'name':'Bonus','data':props.bonus, 'emoji':'&#127942',}
+                ]
+                text = "<p id=title >" + props.name + "</p>"
+                i = 0
+                while (i<props_list.length) {
+                    if (props_list[i].data != null) {
+                        emoji = props_list[i].emoji + " "
+                        title = "<b>" + props_list[i].name + "</b>" + ": "
+                        data = props_list[i].data
+                        text += "<p class=text>" + emoji + title + data + "</p>"
+                    }
+                    i++
+                }
+                return text
+            }
+
+            // Sets options for L.BeautifyIcon. Documentation here:https://github.com/masajid390/BeautifyMarker
+            options = {
+                icon: 'question fa-2x',
+                borderColor: '#F16B22',
+                borderWidth: 4,
+                backgroundColor: '#F6921E',
+                textColor: 'black',
+                iconShape: 'marker',
+                innerIconAnchor: [0,0],
+                iconSize: [30,30]
+            };
+
+            changed_options = {
+                icon: 'check fa',
+                borderColor: '#000000',
+                borderWidth: 2,
+                backgroundColor: '#FFFFFF',
+                textColor: 'black',
+                iconShape: 'marker',
+                iconSize: [30,30]
+            };
+
+            function getCode(btn) {
+                console.log(btn)
+                if (btn.textContent.includes("Found")) {
+                    code = "F"
+                } else if (btn.textContent.includes("bonus")) {
+                    code = "B"
+                } else if (btn.textContent.includes("broken")) {
+                    code = "X"
+                } else {
+                    
+                }
+                return code
+            }
+
+            function updateProgress(btn, points) {
+                html = $("#progress_table").html()
+                lyr = marker_group.getLayer(btn.id)
+                title = lyr._icon.title
+                now = moment(new Date().getTime()).format("HH:mm:ss")
+                previous_points = $(".points")
+                for (i = 0; i < previous_points.length; i++) {
+                    total = previous_points[i].textContent
+                    total = Number(total)
+                    console.log(total)
+                }
+                code = getCode(btn)
+                
+                html += "<tr><td>" + now + "</td><td>" + title + "</td><td class='points'>+" + points + "</td><td>" + code + "</td>"
+
+                    $("#progress_table").html(html)
+            }
+            
+            function returnButton(id, btn_class, points, props, message, addBreaks=false) {
+                if (addBreaks) {
+                    button = "<br><br><button id=" + id
+                } else {
+                    button = "<button id=" + id
+                }
+                button += " class='" + btn_class
+                button += "' onclick='this.disabled=true; addPoints(this.id," + points + "); updateProgress(this," + points + ")'"
+                button += ">" + message + " +" + points + "</button>"
+                return button
+            }
+
+            geojson = L.geoJson(scavenger_points, {
+                pointToLayer: function (feature, latlng) {
+                    // This function converts each point in the geoJSON file to a leaflet layer.
+                    // The need for this is explained here: https://leafletjs.com/examples/geojson/
+                    button_state_dict[L.stamp(feature)] = 'enabled'
+                    id = L.stamp(feature)
+                    // Equalises the button and leaflet ids, used to reference each other in user interactions.
+                    id += 1
+
+                    props = feature.properties
+                    text = formatText(props)
+
+                    button_message = '<message>' + message + '</message>'
+                    button_text = returnButton(id, 'button', props.points_int, props, "Found it!")
+                    button_text += button_message
+                    if (props.bonus_int_1) {
+                        button_text += returnButton(id, 'button', props.bonus_int_1, props, "Got the bonus!", addBreaks=true)
+                    }
+                    if (props.bonus_int_2) {
+                        button_text += returnButton(id, 'button', props.bonus_int_2, props, "Got the bonus!", addBreaks=true)
+                    }
+                    if (props.broken) {
+                        button_text += returnButton(id, 'button-error', props.broken, props, "It's broken..." , addBreaks=true)
+                    }
+                    text += button_text + "<br><br>"
+                    marker = L.marker(latlng, {icon: L.BeautifyIcon.icon(options),title: props.name, text:text})
+                    marker.on('click', function(event) {
+                        sidebarLeft.show()
+                        sidebarLeft.setContent(event.target.options.text)
+                    })
+                    marker_group.addLayer(marker)
+                    return marker
+                }
+            })
+
+            geojson.addTo(map)
+
+            // Defines as XYZ layer of Stamen Toner and sets it as a basemap.
+            // Other basemaps can be found here: http://leaflet-extras.github.io/leaflet-providers/preview/ 
+            Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                subdomains: 'abcd',
+                minZoom: 0,
+                maxZoom: 20,
+                ext: 'png'
+            });
+
+            Stamen_Toner.addTo(map);
+
+            function scaleImage(height, width, divider) {
+                height = height / divider
+                width = width / divider
+                return "height='" + height + "' width='" + width + "'"
+            }
+
+            function addQuakeCoRELogo() {
+                // Adds the QuakeCoRE logo
+                quakeCoRELogo.onAdd = function(map) {
+                    var div = L.DomUtil.create('div', 'leaflet-right');
+                    height = 1749
+                    width = 8981
+                    divider = 36
+                    dimensions = scaleImage(height, width, divider)
+                    div.innerHTML= "<img src='img/qclogo.png'" + dimensions + " />";
+                    div.style.margin = '0px 0px 0px 0px';
+                    div.id = "quakelogo"
+                    return div;
+                }
+                quakeCoRELogo.addTo(map)
+            }
+
+            map.on("contextmenu", function() {
+                // This function is used for testing, and can be called by clicking the map with the right mouse button
+                console.log("Testing");
+            })
+        </script>
+    </body>
+</html>

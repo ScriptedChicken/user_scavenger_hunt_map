@@ -1,0 +1,107 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  }
+
+#map {
+  width: 100vw;
+  height: 100vh
+}
+
+.leaflet-right {
+  border-radius: '25px'
+}
+
+#sidebarLeft, #sidebarRight, #progress_table {
+  background-color: rgb(80,81,84);
+  color: rgba(255, 255, 255)
+}
+#progress_table {
+  margin-top: 15px;
+}
+#quakelogo {
+  padding: 4% 4% 4% 4%;
+  background-color: rgb(255, 255, 255, 0.9);
+  border-radius: 15px 0px 0px 0px;
+}
+
+.fa {
+  color: #F16B22;
+  /* background-color: #808184; */
+}
+
+/* .leaflet-popup-content {width:100% !important;} */
+counter {font-size: 480%;
+  color: #F6921E; 
+  font-weight: bold; 
+  background-color: rgb(255, 255, 255, 0.9); 
+  border-radius: 15px 0px 0px 15px;
+}
+/* Font size and formatting controllers */
+#title {
+  font-size: 30px;
+  font-weight: bolder;
+}
+.timer, .progress {
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+.text, #progress_table {
+  font-size: 17px;
+}
+th, td {
+  text-align: left;
+}
+.italics {
+  font-style: italic;
+}
+message {
+  font-size: 15px;
+  color:#F6921E;
+}
+.button {
+  background-color: #F6921E;
+  border: #F6921E;
+  color: rgb(80,81,84);
+}
+
+.button:hover, .button-error:hover {
+  background-color: white;
+  color: black;
+}
+
+.button-error {
+  background-color: #926e46;
+  border: #F6921E;
+  color: rgb(80,81,84);
+}
+.button, .button-error {
+  transition-duration: 0.4s;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 15px 15px 15px 15px;
+}
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}

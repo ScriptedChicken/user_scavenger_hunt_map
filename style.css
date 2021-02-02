@@ -1,0 +1,32 @@
+.title {
+    font-size: 30px;
+    font-weight: bolder;
+}
+.button, .title {
+    margin-left: 30px
+}
+.button {
+    background-color: #F6921E;
+    border: #F6921E;
+    color: rgb(80,81,84);
+  }
+  
+  .button:hover, .button-error:hover {
+    background-color: #F16B22;
+    color: black;
+  }
+  
+  .button-error {
+    background-color: #926e46;
+    border: #F6921E;
+    color: rgb(80,81,84);
+  }
+  .button, .button-error {
+    transition-duration: 0.4s;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 15px 15px 15px 15px;
+  }
