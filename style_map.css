@@ -2,7 +2,9 @@ body, html {
   height: 100%;
   margin: 0;
   font-family: 'Inter', sans-serif;
-  }
+  scrollbar-color: #F6921E #808184;
+  scrollbar-width: thin;
+}
 
 #map {
   width: 100vw;
@@ -15,7 +17,7 @@ body, html {
 
 #sidebarLeft, #sidebarRight, #progress_table {
   background-color: rgb(80,81,84);
-  color: rgba(255, 255, 255)
+  color: rgba(255, 255, 255);
 }
 #progress_table {
   margin-top: 15px;
@@ -26,8 +28,9 @@ body, html {
   border-radius: 15px 0px 0px 0px;
 }
 
-.fa {
-  color: #F16B22;
+.fa-bars {
+  /* color:  #808184; */
+  padding-top: 8px;
   /* background-color: #808184; */
 }
 
