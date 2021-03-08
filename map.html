@@ -242,7 +242,7 @@
                 num += points
                 updatePointsCounter(num)
                 try{changeMarkerState(id)}
-                catch{}
+                catch{console.log("Something's going wrong - marker state can't be changed.")}
             }
 
             function updatePointsCounter(num) {
@@ -262,6 +262,7 @@
                 // Takes the ID of the clicked button, matching it with the leaflet marker ID. The string of
                 // the display text is then sliced, removing the button, allowing the button to stay removed after
                 // opening and closing a popup.
+                lyr = marker_group.getLayer(id)
                 text = lyr.options['text']
                 n = text.indexOf('<button')
                 lyr.options['text'] = text.slice(0, n)
@@ -272,6 +273,7 @@
                 // Couldn't figure out how to change the marker display once placed
                 icon = L.BeautifyIcon.icon(changed_options)
                 lyr.setIcon(icon)
+                console.log(lyr)
             }
 
             function formatText(props) {
@@ -364,7 +366,7 @@
                     width = 8981
                     divider = 36
                     dimensions = scaleImage(height, width, divider)
-                    div.innerHTML= "<img src='img/qclogo.png'" + dimensions + " />";
+                    div.innerHTML= "<img src='static/img/qclogo.png'" + dimensions + " />";
                     div.style.margin = '0px 0px 0px 0px';
                     div.id = "quakelogo"
                     return div;
