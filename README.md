@@ -16,11 +16,11 @@ Possible Additions:
     * track location if within set bounds (central chch)
     * else, display message/icon notifying the user that they are outside of the play area
 
-![](.\img\app_example.png)
+![View upon opening](./img/app_example.png) 
 *Figure 1: Entire app view*
 
-![](.\img\timer_and_progress.png)  
+![](./img/timer_and_progress.png)  
 *Figure 2: Timer and progress*
 
-![](.\img\location_sidebar.png)
+![](./img/location_sidebar.png)     
 *Figure 3: Location sidebar*
