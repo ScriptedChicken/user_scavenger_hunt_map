@@ -7,14 +7,15 @@ An interactive map for use in the chch scavenger hunt activity created in 2020/2
 
 Needed Improvements:
 * Better-stylised title page (index.html)
-    
-Possible Additions:
-* Addition of team name input
-* Originally set opacity for logo to low, user can tap/click to increase opacity
-* Every location visited logged in text file, can be used for viewing later to validate points
-* Add location tracking functionality
-    * track location if within set bounds (central chch)
-    * else, display message/icon notifying the user that they are outside of the play area
+
+Uses:
+* Javascript
+* Leaflet
+* CSS
+* HTML
+* GeoJSON
+* QGIS
+* ...and more
 
 ![View upon opening](./img/app_example.png) 
 *Figure 1: Entire app view*
