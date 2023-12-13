@@ -15,3 +15,12 @@ Possible Additions:
 * Add location tracking functionality
     * track location if within set bounds (central chch)
     * else, display message/icon notifying the user that they are outside of the play area
+
+![](C:\Users\angus\PycharmProjects\user_scavenger_hunt_map\img\app_example.png)
+*Figure 1: Entire app view*
+
+![](C:\Users\angus\PycharmProjects\user_scavenger_hunt_map\img\timer_and_progress.png)  
+*Figure 2: Timer and progress*
+
+![](C:\Users\angus\PycharmProjects\user_scavenger_hunt_map\img\location_sidebar.png)
+*Figure 3: Location sidebar*

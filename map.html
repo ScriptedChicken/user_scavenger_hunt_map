@@ -47,7 +47,7 @@
             <button id='888' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("chch_frames_div")'>Found a Chch Frame!</button>
             <div id='chch_frames_div' class='text'>0</div>
             <br><br>
-            <button id='999' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("nga_whāriki_manaaki_div")'>Found a Whāriki Manaaki!</button>
+            <button id='999' class='button' onclick='addPoints(this.id,5); updateProgress(this,5); plusOne("nga_whāriki_manaaki_div")'>Found a Whaariki Manaaki!</button>
             <div id='nga_whāriki_manaaki_div' class='text'>0</div>
             <br><br>
             <hr>
@@ -99,15 +99,14 @@
 
             // Defines as XYZ layer of Stamen Toner and sets it as a basemap.
             // Other basemaps can be found here: http://leaflet-extras.github.io/leaflet-providers/preview/ 
-            var Stamen_Toner = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
-                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                subdomains: 'abcd',
+            var Stadia_AlidadeSmoothDark = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
                 minZoom: 0,
                 maxZoom: 20,
+                attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 ext: 'png'
             });
 
-            Stamen_Toner.addTo(map);
+            Stadia_AlidadeSmoothDark.addTo(map);
 
             var timerButton = L.easyButton('fa-bars', function(btn, map) {
                 sidebarRight.toggle()
@@ -366,7 +365,7 @@
                     width = 8981
                     divider = 36
                     dimensions = scaleImage(height, width, divider)
-                    div.innerHTML= "<img src='static/img/qclogo.png'" + dimensions + " />";
+                    div.innerHTML= "<img src='img/qclogo.png'" + dimensions + " />";
                     div.style.margin = '0px 0px 0px 0px';
                     div.id = "quakelogo"
                     return div;
